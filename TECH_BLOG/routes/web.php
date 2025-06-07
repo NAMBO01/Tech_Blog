@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +36,22 @@ Route::get('auth/google', [LoginController::class, 'redirectToGoogle'])->name('a
 Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 Route::get('auth/facebook', [LoginController::class, 'redirectToFacebook'])->name('auth.facebook');
 Route::get('auth/facebook/callback', [LoginController::class, 'handleFacebookCallback'])->name('auth.facebook.callback');
+
+// Logout Route
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+    // Profile routes
+    Route::get('/admin/profile', [ProfileController::class, 'index'])->name('admin.profile');
+    Route::put('/admin/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
+
+    // Post management routes
+    Route::get('/admin/post', [PostController::class, 'index'])->name('admin.post_admin');
+    Route::get('/admin/post/create', [PostController::class, 'create'])->name('admin.post.create');
+    Route::post('/admin/post', [PostController::class, 'store'])->name('admin.post.store');
+    Route::get('/admin/post/{post}/edit', [PostController::class, 'edit'])->name('admin.post.edit');
+    Route::put('/admin/post/{post}', [PostController::class, 'update'])->name('admin.post.update');
+    Route::delete('/admin/post/{post}', [PostController::class, 'destroy'])->name('admin.post.destroy');
+});

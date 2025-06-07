@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 05, 2025 at 04:42 AM
+-- Generation Time: Jun 07, 2025 at 04:05 AM
 -- Server version: 8.0.31
 -- PHP Version: 8.2.0
 
@@ -346,7 +346,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `display_name`, `bio`, `avatar_url`, `role`, `website`, `created_at`, `updated_at`, `last_login`) VALUES
-(1, 'adminuser', 'admin@techblog.com', 'hashedpassword1', 'Admin User', NULL, NULL, 'admin', NULL, '2025-05-23 00:12:14', '2025-05-23 00:12:14', NULL),
+(1, 'adminuser', 'admin@techblog.com', 'c11bb66099c9ecd197cdaf69415bbb9a', 'Admin User', NULL, NULL, 'admin', NULL, '2025-05-23 00:12:14', '2025-06-07 03:38:57', '2025-06-07 03:38:57'),
 (2, 'johnsmith', 'john@example.com', 'hashedpassword2', 'John Smith', NULL, NULL, 'author', NULL, '2025-05-23 00:12:14', '2025-05-23 00:12:14', NULL),
 (3, 'janedoe', 'jane@example.com', 'hashedpassword3', 'Jane Doe', NULL, NULL, 'reader', NULL, '2025-05-23 00:12:14', '2025-05-23 00:12:14', NULL);
 
@@ -400,6 +400,43 @@ CREATE TABLE IF NOT EXISTS `views` (
 INSERT INTO `views` (`id`, `post_id`, `view_count`, `last_viewed_at`) VALUES
 (1, 1, 100, '2025-05-23 00:12:14'),
 (2, 2, 150, '2025-05-23 00:12:14');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `visits`
+--
+
+DROP TABLE IF EXISTS `visits`;
+CREATE TABLE IF NOT EXISTS `visits` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_agent` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `page_url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `referer_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `country` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `city` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `device_type` enum('mobile','desktop','tablet') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `browser` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `os` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_ip_address` (`ip_address`),
+  KEY `idx_page_url` (`page_url`),
+  KEY `idx_created_at` (`created_at`)
+) ;
+
+--
+-- Triggers `visits`
+--
+DROP TRIGGER IF EXISTS `visits_update_timestamp`;
+DELIMITER $$
+CREATE TRIGGER `visits_update_timestamp` BEFORE UPDATE ON `visits` FOR EACH ROW BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END
+$$
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

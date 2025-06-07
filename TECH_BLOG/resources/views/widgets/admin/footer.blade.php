@@ -2,7 +2,7 @@
 <footer class="sticky-footer bg-white">
     <div class="container my-auto">
         <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2021</span>
+            <span>Copyright &copy; Tech Blog {{ date('Y') }}</span>
         </div>
     </div>
 </footer>
@@ -55,3 +55,10 @@
 <!-- Page level custom scripts -->
 <script src="{{ asset('admin_page/js/demo/chart-area-demo.js') }}"></script>
 <script src="{{ asset('admin_page/js/demo/chart-pie-demo.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        // Initialize all dropdowns
+        $('.dropdown-toggle').dropdown();
+    });
+</script>
