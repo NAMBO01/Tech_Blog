@@ -18,9 +18,17 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'username',
         'name',
         'email',
-        'password',
+        'phone_number',
+        'password_hash',
+        'display_name',
+        'bio',
+        'avatar_url',
+        'role',
+        'website',
+        'last_login'
     ];
 
     /**
@@ -29,7 +37,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'password_hash',
         'remember_token',
     ];
 
@@ -40,6 +48,85 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'last_login' => 'datetime',
     ];
+
+    /**
+     * Get the password for the user.
+     */
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
+    /**
+     * Set the password for the user.
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password_hash'] = bcrypt($value);
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is author
+     */
+    public function isAuthor()
+    {
+        return $this->role === 'author';
+    }
+
+    /**
+     * Check if user is reader
+     */
+    public function isReader()
+    {
+        return $this->role === 'reader';
+    }
+
+    /**
+     * Check if user has admin or author role
+     */
+    public function isAdminOrAuthor()
+    {
+        return in_array($this->role, ['admin', 'author']);
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        if (!empty($this->attributes['avatar_url'])) {
+            return asset($this->attributes['avatar_url']);
+        }
+        return asset('admin_page/img/undraw_profile.svg');
+    }
+
+    // Relationships
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'author_id');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function bookmarks()
+    {
+        return $this->belongsToMany(Post::class, 'user_interactions', 'user_id', 'post_id')
+            ->where('bookmarked', 1)
+            ->withTimestamps();
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 }

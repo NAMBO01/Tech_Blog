@@ -27,6 +27,10 @@ class LoginController extends Controller
             ->first();
 
         if ($user) {
+            if ($user->role !== 'admin' && $user->role !== 'author') {
+                Auth::logout();
+                return back()->with('error', 'Chỉ tài khoản admin và author mới được phép đăng nhập!');
+            }
             Auth::login($user);
             // Cập nhật thời gian đăng nhập cuối
             $user->update(['last_login' => now()]);
@@ -61,6 +65,10 @@ class LoginController extends Controller
             $finduser = User::where('google_id', $user->id)->first();
 
             if ($finduser) {
+                // Kiểm tra xem user có quyền truy cập admin không
+                if ($finduser->role !== 'admin' && $finduser->role !== 'author') {
+                    return redirect()->route('login_admin')->with('error', 'Tài khoản của bạn không có quyền truy cập trang admin!');
+                }
                 Auth::login($finduser);
                 $finduser->update(['last_login' => now()]);
                 return redirect()->route('admin.dashboard');
@@ -69,7 +77,8 @@ class LoginController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'google_id' => $user->id,
-                    'password_hash' => md5(rand(1, 10000)) // Tạo mật khẩu ngẫu nhiên và mã hóa MD5
+                    'password_hash' => md5(rand(1, 10000)), // Tạo mật khẩu ngẫu nhiên và mã hóa MD5
+                    'role' => 'author' // Mặc định là author khi đăng nhập bằng Google
                 ]);
 
                 Auth::login($newUser);
@@ -95,6 +104,10 @@ class LoginController extends Controller
             $finduser = User::where('facebook_id', $user->id)->first();
 
             if ($finduser) {
+                // Kiểm tra xem user có quyền truy cập admin không
+                if ($finduser->role !== 'admin' && $finduser->role !== 'author') {
+                    return redirect()->route('login_admin')->with('error', 'Tài khoản của bạn không có quyền truy cập trang admin!');
+                }
                 Auth::login($finduser);
                 $finduser->update(['last_login' => now()]);
                 return redirect()->route('admin.dashboard');
@@ -103,7 +116,8 @@ class LoginController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'facebook_id' => $user->id,
-                    'password_hash' => md5(rand(1, 10000)) // Tạo mật khẩu ngẫu nhiên và mã hóa MD5
+                    'password_hash' => md5(rand(1, 10000)), // Tạo mật khẩu ngẫu nhiên và mã hóa MD5
+                    'role' => 'author' // Mặc định là author khi đăng nhập bằng Facebook
                 ]);
 
                 Auth::login($newUser);

@@ -1,0 +1,104 @@
+/* CSS cho form đăng ký tài khoản */
+.register-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f7f9fb;
+}
+.register-form {
+    background: #fff;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    border-radius: 18px;
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.07);
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+}
+.register-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: #22223b;
+    letter-spacing: 1px;
+    font-size: 2rem;
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    font-weight: 500;
+    color: #22223b;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+.form-control {
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background: #f7f9fb;
+    font-size: 1.08rem;
+    transition: border 0.2s;
+    margin-bottom: 0.1rem;
+    box-sizing: border-box;
+}
+.form-control:focus {
+    border-color: #4f8cff;
+    outline: none;
+    background: #fff;
+}
+.btn-register {
+    width: 100%;
+    padding: 0.85rem;
+    background: linear-gradient(90deg, #4f8cff, #38b6ff);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    margin-top: 1.2rem;
+    box-shadow: 0 2px 8px rgba(79, 140, 255, 0.08);
+}
+.btn-register:hover {
+    background: linear-gradient(90deg, #38b6ff, #4f8cff);
+    box-shadow: 0 4px 16px rgba(56, 182, 255, 0.13);
+}
+@media (max-width: 600px) {
+    .register-form {
+        padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+        max-width: 98vw;
+    }
+    .register-title {
+        font-size: 1.3rem;
+    }
+}
+
+body.dark-mode,
+.dark-mode body {
+    background: #181a1b !important;
+    color: #e0e0e0 !important;
+}
+.dark-mode .register-form {
+    background: #23272f;
+    color: #e0e0e0;
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.4);
+}
+.dark-mode .form-control {
+    background: #23272f;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+.dark-mode .form-control:focus {
+    background: #23272f;
+    color: #fff;
+    border-color: #4f8cff;
+}
+.dark-mode .btn-register {
+    background: linear-gradient(90deg, #23272f, #4f8cff);
+}
+.dark-mode .btn-register:hover {
+    background: linear-gradient(90deg, #4f8cff, #23272f);
+}

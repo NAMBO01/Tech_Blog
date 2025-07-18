@@ -15,10 +15,13 @@
                     @include('widgets.admin.profile')
                 </div>
                 <!-- End of Main Content -->
-                @include('widgets.admin.footer')
             </div>
             <!-- End of Content Wrapper -->
         </div>
         <!-- End of Page Wrapper -->
     </body>
+@endsection
+
+@section('scripts')
+    @stack('scripts')
 @endsection

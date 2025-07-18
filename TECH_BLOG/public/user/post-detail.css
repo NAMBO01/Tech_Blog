@@ -1,0 +1,71 @@
+.post-detail-card {
+    background: #fff;
+    border-radius: 2rem;
+    box-shadow: 0 0.5rem 2rem rgba(44, 62, 80, 0.08);
+    padding: 2.5rem 2rem;
+    margin-bottom: 2rem;
+}
+.post-detail-title {
+    font-size: 2.7rem;
+    font-weight: 800;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 1.2rem;
+}
+.post-detail-meta {
+    color: #7f8c8d;
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.post-detail-badges {
+    margin-bottom: 2.5rem !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.post-detail-badges .badge {
+    font-size: 1rem;
+    padding: 0.7rem 1.5rem;
+    margin: 0 0.5rem 0.5rem 0;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 8px rgba(78, 115, 223, 0.1);
+}
+.post-detail-cover {
+    clear: both;
+    margin-bottom: 1.5rem;
+}
+.post-detail-cover img {
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.1);
+    margin-bottom: 1.5rem;
+}
+.post-detail-summary {
+    background: #f8f9fa;
+    border-left: 6px solid #4e73df;
+    border-radius: 0.7rem;
+    padding: 1.2rem 1.5rem;
+    font-size: 1.15rem;
+    margin-bottom: 1.5rem;
+}
+.post-detail-content {
+    font-size: 1.13rem;
+    line-height: 1.85;
+    color: #222;
+    margin-bottom: 2rem;
+}
+.post-detail-tags .badge {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+@media (max-width: 768px) {
+    .post-detail-title {
+        font-size: 1.5rem;
+    }
+    .post-detail-card {
+        padding: 1rem;
+    }
+}
