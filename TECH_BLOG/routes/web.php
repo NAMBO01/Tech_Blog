@@ -48,9 +48,9 @@ Route::get('/tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show'
 
 Route::get('/posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
-Route::get('/search', function () {
-    return view('search');
-})->name('search');
+// Search routes
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'search'])->name('search');
+Route::get('/search/ajax', [App\Http\Controllers\SearchController::class, 'ajaxSearch'])->name('search.ajax');
 
 // Admin Routes
 // Route::get('/admin', function () {
@@ -147,6 +147,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'userProfile'])->name('user.profile');
 });
 
+Route::middleware('auth')->get('/bookmarks', [App\Http\Controllers\UserController::class, 'bookmarks'])->name('user.bookmarks');
+
 Route::get('/admin/revisions/pending', [PostController::class, 'pendingRevisions'])->name('admin.revisions.pending');
 Route::post('/admin/revisions/{revision}/approve', [PostController::class, 'approveRevision'])->name('admin.revisions.approve');
 Route::post('/admin/revisions/{revision}/reject', [PostController::class, 'rejectRevision'])->name('admin.revisions.reject');
@@ -155,3 +157,4 @@ Route::get('/posts/{slug}', [PostController::class, 'show'])->name('posts.show')
 Route::post('/posts/{post}/rate', [PostController::class, 'rate'])->name('posts.rate');
 Route::post('/posts/{post}/bookmark', [PostController::class, 'bookmark'])->name('posts.bookmark');
 Route::post('/posts/{post}/comment', [PostController::class, 'comment'])->name('posts.comment');
+Route::post('/posts/{post}/comment/ajax', [App\Http\Controllers\PostController::class, 'commentAjax'])->name('posts.comment.ajax');

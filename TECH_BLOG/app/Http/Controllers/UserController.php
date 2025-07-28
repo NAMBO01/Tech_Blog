@@ -76,4 +76,11 @@ class UserController extends Controller
         return redirect()->route('admin.admin_users')
             ->with('success', 'Người dùng đã được xóa thành công.');
     }
+
+    public function bookmarks()
+    {
+        $user = auth()->user();
+        $posts = $user->bookmarks()->with(['author', 'category'])->orderByDesc('created_at')->paginate(12);
+        return view('user.bookmarks', compact('posts'));
+    }
 }

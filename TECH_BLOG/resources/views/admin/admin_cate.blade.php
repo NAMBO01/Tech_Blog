@@ -34,6 +34,7 @@
                                             <tr class="text-center">
                                                 <th style="width: 60px;">ID</th>
                                                 <th style="min-width: 150px;">Tên</th>
+
                                                 <th style="min-width: 120px;">Slug</th>
                                                 <th style="min-width: 120px;">Danh mục cha</th>
                                                 <th style="min-width: 120px;">Lĩnh vực</th>
@@ -49,6 +50,8 @@
                                                 <tr>
                                                     <td class="text-center">{{ $category->id }}</td>
                                                     <td class="font-weight-bold">{{ $category->name }}</td>
+                                                    <
+
                                                     <td>{{ $category->slug }}</td>
                                                     <td>{{ $category->parent ? $category->parent->name : 'Không có' }}</td>
                                                     <td>{{ $category->field ? $category->field->name : 'Không có' }}</td>

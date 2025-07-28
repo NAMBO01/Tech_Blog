@@ -35,6 +35,8 @@
                             <tr class="text-center">
                                 <th style="width: 60px;">STT</th>
                                 <th style="min-width: 180px;">Tên danh mục</th>
+                                <th style="min-width: 180px;">Tên </th>
+
                                 <th style="min-width: 200px;">Mô tả</th>
                                 @if (auth()->user() && auth()->user()->isAdmin())
                                     <th style="width: 140px;">Thao tác</th>
@@ -45,6 +47,8 @@
                             @foreach ($categories as $category)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td class="font-weight-bold">{{ $category->name }},</td>
+
                                     <td class="font-weight-bold">{{ $category->name }}</td>
                                     <td>{{ Str::limit($category->description, 60) }}</td>
                                     @if (auth()->user() && auth()->user()->isAdmin())

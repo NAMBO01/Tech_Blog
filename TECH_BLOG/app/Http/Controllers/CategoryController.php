@@ -101,4 +101,15 @@ class CategoryController extends Controller
                 ->with('error', 'Có lỗi xảy ra khi xóa danh mục: ' . $e->getMessage());
         }
     }
+
+    public function show(Category $category)
+    {
+        $posts = $category->posts()
+            ->where('status', 'published')
+            ->with(['author', 'tags'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('categories.show', compact('category', 'posts'));
+    }
 }

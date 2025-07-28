@@ -13,10 +13,10 @@ class DashboardController extends Controller
     public function index()
     {
         // Lấy tổng số lượt truy cập
-        $totalVisits = Visit::count();
+        // $totalVisits = Visit::count();
 
-        // Lấy lượt truy cập hôm nay
-        $todayVisits = Visit::whereDate('created_at', Carbon::today())->count();
+        // // Lấy lượt truy cập hôm nay
+        // $todayVisits = Visit::whereDate('created_at', Carbon::today())->count();
 
         // Lấy tổng số bài viết
         $totalPosts = Post::count();
@@ -25,8 +25,8 @@ class DashboardController extends Controller
         $totalComments = Comment::count();
 
         return view('admin.index_admin', compact(
-            'totalVisits',
-            'todayVisits',
+            // 'totalVisits',
+            // 'todayVisits',
             'totalPosts',
             'totalComments'
         ));

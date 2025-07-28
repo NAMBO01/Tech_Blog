@@ -65,4 +65,15 @@ class TagController extends Controller
         return redirect()->route('admin.admin_tags')
             ->with('success', 'Thẻ đã được xóa thành công.');
     }
+
+    public function show(Tag $tag)
+    {
+        $posts = $tag->posts()
+            ->where('status', 'published')
+            ->with(['author', 'category'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        return view('tags.show', compact('tag', 'posts'));
+    }
 }

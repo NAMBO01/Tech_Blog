@@ -240,16 +240,24 @@ class PostController extends Controller
         return back()->with('success', 'Cảm ơn bạn đã đánh giá bài viết!');
     }
 
-    public function bookmark(Post $post)
+    public function bookmark(Request $request, Post $post)
     {
         $user = auth()->user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
 
+        // Toggle bookmark
         if ($post->bookmarks()->where('user_id', $user->id)->exists()) {
             $post->bookmarks()->detach($user->id);
-            $message = 'Đã xóa bài viết khỏi danh sách đã lưu';
+            $message = 'Đã bỏ lưu bài viết!';
         } else {
             $post->bookmarks()->attach($user->id);
-            $message = 'Đã lưu bài viết thành công';
+            $message = 'Đã lưu bài viết!';
+        }
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'message' => $message]);
         }
 
         return back()->with('success', $message);
@@ -311,5 +319,41 @@ class PostController extends Controller
             'content' => $request->content,
         ]);
         return back()->with('success', 'Bình luận của bạn đã được gửi!');
+    }
+
+    public function commentAjax(Request $request, Post $post)
+    {
+        $request->validate([
+            'content' => 'required|string|max:1000',
+        ]);
+
+        $comment = $post->comments()->create([
+            'user_id' => auth()->id(),
+            'content' => $request->content,
+            'parent_comment_id' => $request->parent_comment_id ?? null,
+        ]);
+
+        $user = $comment->user;
+        $avatar = $user && $user->avatar_url ? $user->avatar_url : asset('admin_page/img/undraw_profile.svg');
+        $name = $user && $user->name ? $user->name : 'Ẩn danh';
+        $created = $comment->created_at->format('d/m/Y H:i');
+        $content = e($comment->content);
+
+        $html = '<div class="media mb-4 align-items-center">'
+            . '<img src="' . $avatar . '" class="mr-3 rounded-circle border" style="width:48px; height:48px; object-fit:cover; box-shadow:0 2px 8px rgba(44,62,80,0.08);" alt="avatar">'
+            . '<div class="media-body">'
+            . '<div class="d-flex align-items-center mb-1">'
+            . '<h6 class="mt-0 mb-0 font-weight-bold mr-2" style="font-size:1.08rem;">' . $name . '</h6>'
+            . '<small class="text-muted" style="font-size:0.95rem;">' . $created . '</small>'
+            . '</div>'
+            . '<div style="font-size:1.08rem; line-height:1.6; color:#222;">' . $content . '</div>'
+            . '</div>'
+            . '</div>';
+
+        return response()->json([
+            'success' => true,
+            'html' => $html,
+            'message' => 'Bình luận của bạn đã được gửi!'
+        ]);
     }
 }

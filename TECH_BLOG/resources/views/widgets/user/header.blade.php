@@ -11,8 +11,15 @@
                 <img src="/admin_page/img/logo2.png" alt="Logo" class="tt-logo-img">
             </a>
         </div>
-        <form class="tt-search">
-            <input type="text" placeholder="Tìm sản phẩm công nghệ, cộng đồng, bạn bè...">
+        <form class="tt-search" action="{{ route('search') }}" method="GET">
+            <div class="search-container">
+                <input type="text" name="q" placeholder="Tìm sản phẩm công nghệ, cộng đồng, bạn bè..."
+                    value="{{ request('q') }}" id="search-input">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <div class="search-suggestions" id="search-suggestions"></div>
+            </div>
         </form>
         <div class="tt-header-actions">
             <a href="#" class="tt-btn-share">Viết Bài Chia Sẻ</a>
@@ -28,7 +35,7 @@
                         <a href="#">Trang cá nhân</a>
                         <a href="{{ route('user.profile') }}">Thông tin cá nhân</a>
                         <hr class="dropdown-divider">
-                        <a href="#">Bookmark</a>
+                        <a href="{{ route('user.bookmarks') }}">Bookmark</a>
                         <a href="#">Bài viết nháp</a>
                         <hr class="dropdown-divider">
                         <a href="#">Tuỳ chọn thông báo</a>
@@ -57,7 +64,7 @@
     <nav class="tt-header-menu">
         <a href="{{ route('home') }}" class="active">Home</a>
         @foreach ($tags as $tag)
-            <a href="#">#{{ $tag->name }}</a>
+            <a href="{{ route('tags.show', $tag->slug) }}">#{{ $tag->name }}</a>
         @endforeach
     </nav>
 </header>
@@ -103,16 +110,122 @@
         max-width: 100%;
         margin: 0 8px;
         margin-right: 20%;
+    }
 
+    .search-container {
+        position: relative;
+        width: 100%;
     }
 
     .tt-search input {
         width: 100%;
         padding: 10px 18px;
+        padding-right: 50px;
         border-radius: 22px;
         border: none;
         background: #f2f3f7;
         font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .tt-search input:focus {
+        outline: none;
+        background: #fff;
+        box-shadow: 0 0 0 2px #2563eb;
+    }
+
+    .search-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+        background: #e5e7eb;
+        color: #2563eb;
+    }
+
+    .search-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 400px;
+        overflow-y: auto;
+        display: none;
+        margin-top: 8px;
+    }
+
+    .search-suggestions.show {
+        display: block;
+    }
+
+    .suggestion-item {
+        padding: 12px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid #f3f4f6;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .suggestion-item:hover {
+        background: #f9fafb;
+    }
+
+    .suggestion-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #fff;
+    }
+
+    .suggestion-icon.post {
+        background: #2563eb;
+    }
+
+    .suggestion-icon.category {
+        background: #10b981;
+    }
+
+    .suggestion-icon.tag {
+        background: #f59e0b;
+    }
+
+    .suggestion-content {
+        flex: 1;
+    }
+
+    .suggestion-title {
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 2px;
+    }
+
+    .suggestion-meta {
+        font-size: 12px;
+        color: #6b7280;
     }
 
     .tt-header-actions {
@@ -344,6 +457,101 @@
                 localStorage.setItem('theme', 'light');
                 document.body.classList.remove('dark-mode');
             });
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        const searchSuggestions = document.getElementById('search-suggestions');
+        let searchTimeout;
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+
+                clearTimeout(searchTimeout);
+
+                if (query.length < 2) {
+                    searchSuggestions.classList.remove('show');
+                    return;
+                }
+
+                searchTimeout = setTimeout(() => {
+                    fetch(`{{ route('search.ajax') }}?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displaySuggestions(data);
+                        })
+                        .catch(error => {
+                            console.error('Search error:', error);
+                        });
+                }, 300);
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                    searchSuggestions.classList.remove('show');
+                }
+            });
+
+            // Handle suggestion clicks
+            searchSuggestions.addEventListener('click', function(e) {
+                const suggestionItem = e.target.closest('.suggestion-item');
+                if (suggestionItem) {
+                    const url = suggestionItem.dataset.url;
+                    if (url) {
+                        window.location.href = url;
+                    }
+                }
+            });
+        }
+
+        function displaySuggestions(data) {
+            if (data.length === 0) {
+                searchSuggestions.classList.remove('show');
+                return;
+            }
+
+            searchSuggestions.innerHTML = '';
+
+            data.forEach(item => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.className = 'suggestion-item';
+                suggestionItem.dataset.url = item.url;
+
+                let iconClass = '';
+                let iconText = '';
+
+                switch (item.type) {
+                    case 'post':
+                        iconClass = 'fas fa-file-alt';
+                        break;
+                    case 'category':
+                        iconClass = 'fas fa-folder';
+                        break;
+                    case 'tag':
+                        iconClass = 'fas fa-tag';
+                        break;
+                }
+
+                suggestionItem.innerHTML = `
+            <div class="suggestion-icon ${item.type}">
+                <i class="${iconClass}"></i>
+            </div>
+            <div class="suggestion-content">
+                <div class="suggestion-title">${item.title}</div>
+                <div class="suggestion-meta">
+                    ${item.type === 'post' ? `${item.category} • ${item.author}` : ''}
+                    ${item.type === 'category' ? item.description : ''}
+                    ${item.type === 'tag' ? 'Tag' : ''}
+                </div>
+            </div>
+        `;
+
+                searchSuggestions.appendChild(suggestionItem);
+            });
+
+            searchSuggestions.classList.add('show');
         }
     });
 </script>

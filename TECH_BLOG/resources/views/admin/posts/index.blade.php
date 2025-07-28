@@ -84,7 +84,7 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('admin.posts.destroy', $post->id) }}" method="POST"
-                                            class="d-inline">
+                                            class="d-inline" id="delete-form-{{ $post->id }}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-outline-danger"
@@ -113,6 +113,13 @@
     <script>
         $(function() {
             $('[data-toggle="tooltip"]').tooltip();
+
+            // Debug delete forms
+            $('form[id^="delete-form-"]').on('submit', function(e) {
+                console.log('Form submitted:', this.action);
+                console.log('Method:', this.method);
+                console.log('CSRF token:', $(this).find('input[name="_token"]').val());
+            });
         });
     </script>
 @endpush
